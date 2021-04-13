@@ -248,7 +248,7 @@ public class EntityGaiaIII extends EntityLiving implements IBotaniaBoss, IEntity
 			}
 		}
 
-		if (isDead)
+		if (players.isEmpty() || isDead)
 			return;
 
 		if (getRankIII()) {
@@ -376,7 +376,8 @@ public class EntityGaiaIII extends EntityLiving implements IBotaniaBoss, IEntity
 	private void disarm(EntityPlayer player) {
 		if (!match(player.getHeldItemMainhand())) {
 			EntityItem item = player.dropItem(true);
-			item.setPickupDelay(90);
+			if (item != null)
+				item.setPickupDelay(90);
 		}
 		for (int i = 0; i < player.inventory.getSizeInventory(); i++) {
 			ItemStack stackAt = player.inventory.getStackInSlot(i);
@@ -404,7 +405,7 @@ public class EntityGaiaIII extends EntityLiving implements IBotaniaBoss, IEntity
 			for (int i = 0; i < whitelist.length; i++) {
 				ItemStack compared = parseItems(whitelist[i]);
 				compared.setCount(stack.getCount());
-				if (stack.areItemStacksEqual(stack, compared))
+				if (ItemStack.areItemStacksEqual(stack, compared))
 					return true;
 			}
 		if (m.indexOf("botania") != -1 || m.indexOf("extrabotany") != -1 || m.indexOf("minecraft") != -1)
@@ -655,19 +656,18 @@ public class EntityGaiaIII extends EntityLiving implements IBotaniaBoss, IEntity
 	public int getInvulTime() {
 		return dataManager.get(INVUL_TIME);
 	}
-	
+
 	public void setInvulTime(int time) {
 		dataManager.set(INVUL_TIME, time);
 	}
-	
+
 	public float getDamageTaken() {
 		return dataManager.get(DAMAGE_TAKEN);
 	}
-	
+
 	public void setDamageTaken(float time) {
 		dataManager.set(DAMAGE_TAKEN, time);
 	}
-
 
 	public BlockPos getSource() {
 		return source;
@@ -745,12 +745,12 @@ public class EntityGaiaIII extends EntityLiving implements IBotaniaBoss, IEntity
 				player.attemptTeleport(getSource().getX(), getSource().getY(), getSource().getZ());
 
 			int cap = 30;
-			
+
 			if (this.cd > 160)
 				this.cd -= 10;
 
 			this.setDamageTaken(getDamageTaken() + Math.min(cap, par2));
-			if(getDamageTaken() >= 80F) {
+			if (getDamageTaken() >= 80F) {
 				setDamageTaken(0);
 				teleportRandomly();
 				this.tpDelay = 80;
@@ -788,7 +788,7 @@ public class EntityGaiaIII extends EntityLiving implements IBotaniaBoss, IEntity
 				motionX = -motionVector.x;
 				motionY = 0.25;
 				motionZ = -motionVector.z;
-				this.tpDelay = Math.max(this.tpDelay - 3,  0);
+				this.tpDelay = Math.max(this.tpDelay - 3, 0);
 			}
 		}
 	}
